@@ -27,6 +27,7 @@ import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -49,12 +50,17 @@ public class BraintreePlugin extends CordovaPlugin implements PaymentMethodNonce
             if (action.equalsIgnoreCase(Apputility.actionGetToken)) {
                 return getToken();
             } else if (action.equalsIgnoreCase(Apputility.actionGetNonce)) {
+                JSONObject arg_object = args.getJSONObject(0);
                 if (mBraintreeFragment != null) {
                     CardBuilder cardBuilder = new CardBuilder()
-                            .cardNumber("4111111111111111")
-                            .expirationMonth("11")
-                            .expirationYear("15");
+                            .cardNumber(arg_object.getString("cardNo"))
+                            .expirationDate("09/2018");
+
                     Card.tokenize(mBraintreeFragment, cardBuilder);
+                    PluginResult.Status status = PluginResult.Status.NO_RESULT;
+                    PluginResult pluginResult = new PluginResult(status);
+                    pluginResult.setKeepCallback(true);
+                    callbackContext.sendPluginResult(pluginResult);
                 }
                 return true;
             } else {
@@ -69,7 +75,7 @@ public class BraintreePlugin extends CordovaPlugin implements PaymentMethodNonce
     }
 
     //region Custom Methods
-    private boolean getToken() {
+    private synchronized boolean getToken() {
         if (Apputility.isNetConnected(cordova.getActivity())) {
             client.get(Apputility.SERVER_BASE + "?action=token", new TextHttpResponseHandler() {
                 @Override

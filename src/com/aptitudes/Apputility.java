@@ -8,8 +8,8 @@ import android.net.NetworkInfo;
  * Created by Admin on 9/13/2016.
  */
 public class Apputility {
-
-    public static final String SERVER_BASE = "http://192.168.0.16:80/braintree/braintreetest.php"; // Replace with your own server
+//http://localhost/braintreePhp/public_html/token.php?action=token
+    public static final String SERVER_BASE = "http://192.168.0.20/braintreePhp/public_html/token.php"; // Replace with your own server
     public static String checkNwConn = "check network connection";
     public static boolean isNetConnected(Context context) {
         if (context == null) {
